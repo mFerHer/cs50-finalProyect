@@ -26,14 +26,10 @@ jobs:
         run: |
           python update_database.py
 
-      - name: Commit updated database
+      - name: Commit & push updated database
         run: |
           git config --local user.email "github-actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add data.db
-          git commit -m "Auto-update database" || echo "No changes to commit"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@v0.8.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git add data.db last_update.txt || true
+          git commit -m "Automated DB update: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
