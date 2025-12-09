@@ -79,4 +79,5 @@ for station in stations:
 db.commit()
 db.close()
 
-print("Last update:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+with open("last_update.txt", "w") as f:
+    f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
