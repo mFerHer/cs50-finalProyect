@@ -1,0 +1,39 @@
+name: Update Stations Database
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Runs every day at 00:00 UTC
+  workflow_dispatch:      # Allows manual runs
+
+jobs:
+  update-db:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run database updater
+        run: |
+          python update_database.py
+
+      - name: Commit updated database
+        run: |
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add data.db
+          git commit -m "Auto-update database" || echo "No changes to commit"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
