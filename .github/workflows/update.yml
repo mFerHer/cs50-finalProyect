@@ -40,4 +40,4 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add data.db last_update.txt || true
           git commit -m "Automated DB update: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" || echo "No changes to commit"
-          git push origin HEAD:price-updates
+          git push origin HEAD:price-updates --force
