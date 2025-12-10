@@ -1,35 +1,48 @@
 name: Update Stations Database
 
+# Triggers: daily at 00:00 UTC and manual runs
 on:
   schedule:
-    - cron: "0 0 * * *"  # Runs every day at 00:00 UTC
-  workflow_dispatch:      # Allows manual runs
+    - cron: "0 0 * * *"
+  workflow_dispatch:
 
 jobs:
   update-db:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      # Checkout the repository with credentials
+      - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # ensures push works
 
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
+      # Install Python dependencies
       - name: Install dependencies
         run: |
           pip install requests
 
+      # Run your database update script
       - name: Run database updater
         run: |
           python update_database.py
 
+      # Write the last update time in Spain (Europe/Madrid timezone)
+      - name: Write last update timestamp
+        run: |
+          TZ="Europe/Madrid" date "+%Y-%m-%d %H:%M:%S" > last_update.txt
+
+      # Commit and push updated files to price-updates
       - name: Commit & push updated database
         run: |
           git config --local user.email "github-actions@github.com"
           git config --local user.name "GitHub Actions"
           git add data.db last_update.txt || true
           git commit -m "Automated DB update: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+          git push origin HEAD:price-updates --force
