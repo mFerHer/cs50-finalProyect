@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- My style.css file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Leaflet's CSS file -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -16,5 +18,19 @@
 <body>
     <!-- TODO: print date and time of the last update -->
     <div id="map"></div>
+    <script>
+        // Initialize map centered in Spain
+        const map = L.map('map').setView([40.4168, -3.7038], 6);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Example marker
+        L.marker([40.4168, -3.7038]).addTo(map)
+            .bindPopup('Center of Spain')
+            .openPopup();
+    </script>
 </body>
 </html>
