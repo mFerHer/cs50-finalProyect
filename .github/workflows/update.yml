@@ -33,6 +33,11 @@ jobs:
         run: |
           python update_database.py
 
+      # Write the last update time in Spain (Europe/Madrid timezone)
+      - name: Write last update timestamp
+        run: |
+          TZ="Europe/Madrid" date "+%Y-%m-%d %H:%M:%S" > last_update.txt
+
       # Commit and push updated files to price-updates
       - name: Commit & push updated database
         run: |
