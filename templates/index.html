@@ -25,11 +25,11 @@
             attribution: "&copy; OpenStreetMap contributors"
         }).addTo(map);
 
-        // Render entire Python list as JSON safely
+        // Render entire Python list as JSON
         const stations = {{ stations | tojson }};
 
         stations.forEach(station => {
-            // Only skip markers if coords are actually null/undefined
+            // Skip markers if coords are actually null/undefined
             if (station.latitude == null || station.longitude == null) return;
 
             L.marker([station.latitude, station.longitude], { title: station.name })
