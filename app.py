@@ -9,6 +9,7 @@ app = Flask(__name__)
 def index():
     
     db = sqlite3.connect("data.db")
+    db.row_factory = sqlite3.Row
     curs = db.cursor()
 
     curs.execute("""SELECT * FROM info

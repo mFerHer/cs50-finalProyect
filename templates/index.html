@@ -20,31 +20,39 @@
     <div id="map"></div>
     <script>
         // Initialize map centered in Spain
-        const map = L.map('map').setView([40.4168, -3.7038], 6);
+        const map = L.map("map").setView([40.4168, -3.7038], 6);
 
         // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap contributors"
         }).addTo(map);
 
-        // Stations data from Flask
+        // Convert data.db rows to JSON objects
         const stations = [
             {% for station in stations %}
             {
-                name: "{{ station['name'] }}",
-                address: "{{ station['address'] }}",
-                timetable: "{{ station['timetable'] }}",
-                lat: "{{ station['latitude'] }}",
-                lng: "{{ station['longitude'] }}"
+                name: {{ station["name"] | tojson }},
+                address: {{ station["address"] | tojson }},
+                timetable: {{ station["timetable"] | tojson }},
+                latitud: {{ station["latitude"] }},
+                longitud: {{ station["longitude"] }},
+                gasoline95: {{ station["gasoline95"] }},
+                gasoline98: {{ station["gasoline98"] }},
+                diesel: {{ station["diesel"] }},
+                diesel_premium: {{ station["diesel_premium"] }},
+                dieselB: {{ station["dieselB"] }}
             }{% if not loop.last %},{% endif %}
             {% endfor %}
         ];
 
         // Add markers for each station
         stations.forEach(station => {
-            L.marker([station.lat, station.lng]).addTo(map)
-                .bindPopup(`<b>${station.name}</b><br>${station.address}<br>Hours: ${station.timetable}`);
-                .openPopup();
+            if (!station.latitud || !station.longitud)
+                return;
+            L.marker([station.latitud, station.longitud]).addTo(map)
+                .bindPopup(`
+                <b>${station.name}</b>
+            `);
         });            
     </script>
 </body>

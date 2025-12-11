@@ -2,7 +2,7 @@ import requests
 import sqlite3
 
 
-db = sqlite3.connect('data.db')
+db = sqlite3.connect("data.db")
 curs = db.cursor()                 
 
 curs.execute("""CREATE TABLE IF NOT EXISTS info (
@@ -31,7 +31,7 @@ url = "https://energia.serviciosmin.gob.es/ServiciosRESTCarburantes/PreciosCarbu
 
 response = requests.get(url)
 data = response.json()
-stations = data['ListaEESSPrecio']
+stations = data["ListaEESSPrecio"]
 
 def convert_price(price):
     if price is None or price == "":
@@ -39,16 +39,15 @@ def convert_price(price):
     return float(price.replace(",", "."))
 
 for station in stations:
-    if station['Tipo Venta'] != 'P':
+    if station["Tipo Venta"] != "P":
         continue
 
     id = int(station["IDEESS"])        
-    name = station['Rótulo']
-    address = f"{station['Dirección']}, {station['C.P.']}, {station['Localidad']}, {station['Provincia']}"
-    timetable = station['Horario']
-    latitude = float(station['Latitud'].replace(",", "."))
-    longitude = float(station['Longitud (WGS84)'].replace(",", "."))
-
+    name = station["Rótulo"]
+    address = f"{station["Dirección"]}, {station["C.P."]}, {station["Localidad"]}, {station["Provincia"]}"
+    timetable = station["Horario"]
+    latitude = float(station["Latitud"].replace(",", "."))
+    longitude = float(station["Longitud (WGS84)"].replace(",", "."))
     curs.execute("""INSERT INTO info (id, name, address, timetable, latitude, longitude)
     VALUES (?, ?, ?, ?, ?, ?)
     ON CONFLICT(id) DO UPDATE SET
@@ -59,12 +58,11 @@ for station in stations:
         longitude = excluded.longitude
     """, (id, name, address, timetable, latitude, longitude))
     
-    gasoline95 = convert_price(station['Precio Gasolina 95 E5'])
-    gasoline98 = convert_price(station['Precio Gasolina 98 E5'])
-    diesel = convert_price(station['Precio Gasoleo A'])
-    diesel_premium = convert_price(station['Precio Gasoleo Premium'])
-    dieselB = convert_price(station['Precio Gasoleo B'])
-
+    gasoline95 = convert_price(station["Precio Gasolina 95 E5"])
+    gasoline98 = convert_price(station["Precio Gasolina 98 E5"])
+    diesel = convert_price(station["Precio Gasoleo A"])
+    diesel_premium = convert_price(station["Precio Gasoleo Premium"])
+    dieselB = convert_price(station["Precio Gasoleo B"])
     curs.execute("""INSERT INTO prices (id, gasoline95, gasoline98, diesel, diesel_premium, dieselB)
     VALUES (?, ?, ?, ?, ?, ?)
     ON CONFLICT(id) DO UPDATE SET
