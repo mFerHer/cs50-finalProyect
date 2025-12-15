@@ -33,17 +33,12 @@ jobs:
         run: |
           python update_database.py
 
-      # Write the last update time in Spain (Europe/Madrid timezone)
-      - name: Write last update timestamp
-        run: |
-          TZ="Europe/Madrid" date "+%Y-%m-%d %H:%M:%S" > last_update.txt
-
       # Commit and push updated files to price-updates
       - name: Commit & push updated database
         run: |
           git config --local user.email "github-actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add data.db last_update.txt || true
+          git add data.db || true
           git commit -m "Automated DB update: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" || echo "No changes to commit"
           git push origin HEAD:price-updates --force
 
@@ -52,5 +47,5 @@ jobs:
         run: |
           git fetch origin main
           git checkout main
-          git merge --no-ff origin/price-updates -m "Sync updated database and timestamp"
+          git merge --no-ff origin/price-updates -m "Sync updated database"
           git push origin main
