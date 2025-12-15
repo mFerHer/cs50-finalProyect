@@ -27,7 +27,7 @@ curs.execute("""CREATE TABLE IF NOT EXISTS prices (
              )
 """)
 
-curs.execute("""CREATE TABLE IF NOT EXISTS timestamp (
+curs.execute("""CREATE TABLE IF NOT EXISTS metadata (
     key TEXT PRIMARY KEY,
     value TEXT
     )
@@ -80,7 +80,7 @@ for station in stations:
         dieselB = excluded.dieselB
     """, (id, gasoline95, gasoline98, diesel, diesel_premium, dieselB))
 
-    curs.execute("""INSERT INTO timestamp (key, value)
+    curs.execute("""INSERT INTO metadata (key, value)
     VALUES (?, ?)
     ON CONFLICT(key) DO UPDATE SET
         value = excluded.value

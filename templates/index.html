@@ -5,6 +5,8 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <!-- My style.css file -->
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+            <!-- My map.js file -->
+            <script src="{{ url_for('static', filename='map.js') }}"></script>
             <!-- Bootstrap CSS -->
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
             <!-- Bootstrap JS -->
@@ -14,15 +16,18 @@
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="crossorigin=""/>
             <!-- Leaflet's JS -->
             <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-            <!-- MarkerCluster CSS -->
+            <!-- Leaflet MarkerCluster CSS -->
             <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
             <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css">
-            <!-- MarkerCluster JS -->
+            <!-- Leaflet MarkerCluster JS -->
             <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
             <title>Homepage</title>
+            <!-- Leaflet Routing Machine CSS and JS -->
+            <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css">
+            <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
         </head>
         <body>
-            <main>
+            <main> 
                 <div class="container col-xxl-8 px-4 py-5">
                     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
                         <div class="col-10 col-sm-8 col-lg-6">
@@ -30,53 +35,35 @@
                         </div> 
                         <div class="col-lg-6"> 
                             <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Encuentra gasolineras en tu ruta</h1>
-                            <!-- Display last updated date -->
                             <p class="lead">Última actualización: {{ last_update }}</p> 
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-start"> 
-                                <button type="button" class="btn btn-primary btn-lg px-4 me-md-2">Primary</button> 
+                            <div>
+                                <!-- Route: starting point and destination regarding localidad -->
+                                <select id="origin" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                                    <option disabled selected>Selecciona punto de partida</option>
+                                    {% for station in stations %} 
+                                        <option value="{{ station.localidad }}" data-lat="{{ station.latitude }}" data-lng="{{ station.longitude }}">{{ station.localidad }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <select id="destination" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                                    <option disabled selected>Selecciona destino</option>
+                                    {% for station in stations %}
+                                        <option value="{{ station.localidad }}" data-lat="{{ station.latitude }}" data-lng="{{ station.longitude }}">{{ station.localidad }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <button id="route-btn" type="button" class="btn btn-primary btn-lg px-4 me-md-2">Mostrar ruta</button> 
+                                <p id="route-distance"></p>
                             </div> 
                         </div> 
-                    </div> 
+                    </div>  
                 </div>
             </main>
             <script>
-                const map = L.map("map").setView([40.4168, -3.7038], 6);
-
-                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                    attribution: "&copy; OpenStreetMap contributors"
-                }).addTo(map);
-
-                // Render entire Python list as JSON
+                // Render entire python list as JSON
                 const stations = {{ stations | tojson }};
-
-                // Create a marker cluster group. Display optimizations
-                const clusters = L.markerClusterGroup({
-                    chunkedLoading: true,
-                    maxClusterRadius: 60,
-                    spiderfyOnMaxZoom: false
-                });
-
-                // Add markers for each station
-                stations.forEach(station => {
-                    // Skip markers if coords are undefined
-                    if (station.latitude == null || station.longitude == null)
-                        return;
-
-                    const marker = L.marker([station.latitude, station.longitude], { title: station.name });
-                    
-                    marker.bindPopup(`
-                            <b>${station.name}</b><br>
-                            ${station.address}<br>
-                            ${station.timetable || 'N/A'}<br>
-                            Gasolina 95: ${station.gasoline95 ?? 'N/A'}<br>
-                            Gasolina 98: ${station.gasoline98 ?? 'N/A'}<br>
-                            Diesel: ${station.diesel ?? 'N/A'}<br>
-                            Diesel Premium: ${station.diesel_premium ?? 'N/A'}<br>
-                            Diesel B: ${station.dieselB ?? 'N/A'}
-                        `)
-                    clusters.addLayer(marker);    
-                });
-                map.addLayer(clusters);
             </script>
         </body>
     </html>
