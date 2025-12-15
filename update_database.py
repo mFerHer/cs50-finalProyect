@@ -29,7 +29,7 @@ curs.execute("""CREATE TABLE IF NOT EXISTS prices (
 
 curs.execute("""CREATE TABLE IF NOT EXISTS timestamp (
     key TEXT PRIMARY KEY,
-    last_update TEXT
+    value TEXT
     )
 """)
 
@@ -80,11 +80,11 @@ for station in stations:
         dieselB = excluded.dieselB
     """, (id, gasoline95, gasoline98, diesel, diesel_premium, dieselB))
 
-    curs.execute("""INSERT INTO timestamp (key, last_update)
+    curs.execute("""INSERT INTO timestamp (key, value)
     VALUES (?, ?)
     ON CONFLICT(key) DO UPDATE SET
-    last_update = excluded.last_update
-    """, (datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),))
+        value = excluded.value
+    """, ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")))
     
     
 db.commit()

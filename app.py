@@ -16,10 +16,9 @@ def index():
     stations = [dict(row) for row in rows]
 
 
-    curs.execute("SELECT last_update FROM timestamp")
+    curs.execute("SELECT value FROM timestamp WHERE key = 'last_update'")
     row = curs.fetchone()
-    last_update = row["last_update"] if row else "Unknown"
-
+    last_update = row["value"] if row else "Unknown"
 
     db.close()
 
