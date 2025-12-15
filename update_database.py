@@ -1,3 +1,4 @@
+from datetime  import datetime
 import requests
 import sqlite3
 
@@ -24,6 +25,12 @@ curs.execute("""CREATE TABLE IF NOT EXISTS prices (
              dieselB REAL,
              FOREIGN KEY (id) REFERENCES info(id)
              )
+""")
+
+curs.execute("""CREATE TABLE IF NOT EXISTS timestamp (
+    key TEXT PRIMARY KEY,
+    last_update TEXT
+    )
 """)
 
 
@@ -72,6 +79,14 @@ for station in stations:
         diesel_premium = excluded.diesel_premium,
         dieselB = excluded.dieselB
     """, (id, gasoline95, gasoline98, diesel, diesel_premium, dieselB))
+
+    curs.execute("""INSERT INTO timestamp (key, last_update)
+    VALUES (?, ?)
+    ON CONFLICT(key) DO UPDATE SET
+    last_update = excluded.last_update
+    """, (datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),))
+    
     
 db.commit()
 db.close()
+

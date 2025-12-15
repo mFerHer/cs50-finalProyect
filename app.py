@@ -10,11 +10,18 @@ def index():
     db = sqlite3.connect("data.db")
     db.row_factory = sqlite3.Row
     curs = db.cursor()
+
     curs.execute("SELECT * FROM info JOIN prices ON info.id = prices.id")
     rows = curs.fetchall()
-    db.close()
-
-    # Convert sqlite Row objects to dicts so Jinja |tojson works
     stations = [dict(row) for row in rows]
 
-    return render_template("index.html", stations=stations)
+
+    curs.execute("SELECT last_update FROM timestamp")
+    row = curs.fetchone()
+    last_update = row["last_update"] if row else "Unknown"
+
+
+    db.close()
+
+
+    return render_template("index.html", stations=stations, last_update=last_update)
