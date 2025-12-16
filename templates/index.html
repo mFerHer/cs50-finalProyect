@@ -37,23 +37,17 @@
                             <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Encuentra gasolineras en tu ruta</h1>
                             <p class="lead">Última actualización: {{ last_update }}</p> 
                             <div>
-                                <!-- Route: starting point and destination regarding localidad -->
-                                <input type="text" id="origin-search" class="form-control mb-3" placeholder="Escribe el punto de partida">
-                                <select id="origin" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                                    <option disabled selected>Selecciona punto de partida</option>
-                                    {% for local in localities %} 
-                                        <option value="{{ local.locality }}" data-lat="{{ local.lat }}" data-lng="{{ local.lng }}">{{ local.locality }}, {{ local.municipality }}</option>
+                                <datalist id="localities-list">
+                                    {% for local in localities %}
+                                        <option value="{{ local.locality }}" data-municipality="{{ local.municipality }}" data-lat="{{ local.lat }}" data-lng="{{ local.lng }}">
+                                            {{ local.municipality }}
+                                        </option>
                                     {% endfor %}
-                                </select>
+                                </datalist>
+                                <input type="text" id="origin" list="localities-list" class="form-control mb-3" placeholder="Escribe el punto de partida">
                             </div>
                             <div>
-                                <input type="text" id="destination-search" class="form-control mb-3" placeholder="Escribe el destino">
-                                <select id="destination" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                                    <option disabled selected>Selecciona destino</option>
-                                    {% for local in localities %}
-                                        <option value="{{ local.locality }}" data-lat="{{ local.lat }}" data-lng="{{ local.lng }}">{{ local.locality }}, {{ local.municipality }}</option>
-                                    {% endfor %}
-                                </select>
+                                <input type="text" id="destination" list="localities-list" class="form-control mb-3" placeholder="Escribe el destino">
                             </div>
                             <div>
                                 <button id="route-btn" type="button" class="btn btn-primary btn-lg px-4 me-md-2">Mostrar ruta</button> 
