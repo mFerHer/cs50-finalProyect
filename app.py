@@ -13,13 +13,11 @@ def index():
 
     # Get stations data
     curs.execute("SELECT * FROM info JOIN prices ON info.id = prices.id")
-
     rows = curs.fetchall()
     stations = [dict(row) for row in rows]
 
     # Get last update
     curs.execute("SELECT value FROM metadata WHERE key = 'last_update'")
-
     row = curs.fetchone()
     last_update = row["value"] if row else "Unknown"
 
@@ -31,7 +29,7 @@ def index():
         GROUP BY locality \
         ORDER BY locality")
     
-    localities = [dict(row) for row in curs.fetchall()]
+    localities = [dict(row) for row in rows]
 
 
     db.close()
