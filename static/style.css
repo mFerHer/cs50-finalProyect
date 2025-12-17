@@ -2,3 +2,25 @@
     height: 500px;
     width: 100%;
 }
+
+.station-icon {
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+    background-color: grey !important;
+}
+
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div {
+    background-color: rgba(158, 99, 105, 0.694) !important;
+}
+
+.location-icon {
+    font-size: 25px;
+    line-height: 25px;
+}

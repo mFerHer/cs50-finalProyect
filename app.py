@@ -28,8 +28,9 @@ def index():
             AND longitude IS NOT NULL \
         GROUP BY locality \
         ORDER BY locality")
-    
-    localities = [dict(row) for row in rows]
+
+    localities_rows = curs.fetchall()
+    localities = [dict(row) for row in localities_rows]
 
 
     db.close()

@@ -6,7 +6,7 @@
             <!-- My style.css file -->
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
             <!-- My map.js file -->
-            <script src="{{ url_for('static', filename='map.js') }}"></script>
+            <script src="{{ url_for('static', filename='leaflet.js') }}"></script>
             <!-- Bootstrap CSS -->
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
             <!-- Bootstrap JS -->
@@ -39,9 +39,7 @@
                             <div>
                                 <datalist id="localities-list">
                                     {% for local in localities %}
-                                        <option value="{{ local.locality }}" data-municipality="{{ local.municipality }}" data-lat="{{ local.lat }}" data-lng="{{ local.lng }}">
-                                            {{ local.municipality }}
-                                        </option>
+                                        <option value="{{ local.locality }}">{{ local.municipality }}</option>
                                     {% endfor %}
                                 </datalist>
                                 <input type="text" id="origin" list="localities-list" class="form-control mb-3" placeholder="Escribe el punto de partida">
@@ -60,6 +58,9 @@
             <script>
                 // Render entire python list as JSON
                 const stations = {{ stations | tojson }};
+
+                // Create a map of localities
+                const localities = {{ localities | tojson }};
             </script>
         </body>
     </html>
