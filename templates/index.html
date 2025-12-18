@@ -42,24 +42,34 @@
                                         <option value="{{ local.locality }}">{{ local.municipality }}</option>
                                     {% endfor %}
                                 </datalist>
-                                <input type="text" id="origin" list="localities-list" class="form-control mb-3" placeholder="Escribe el punto de partida">
+                                <input type="text" id="origin" list="localities-list" class="form-control mb-3" placeholder="Elige el punto de partida">
                             </div>
                             <div>
-                                <input type="text" id="destination" list="localities-list" class="form-control mb-3" placeholder="Escribe el destino">
+                                <input type="text" id="destination" list="localities-list" class="form-control mb-3" placeholder="Elige el destino">
                             </div>
                             <div>
-                                <button id="route-btn" type="button" class="btn btn-primary btn-lg px-4 me-md-2">Mostrar ruta</button> 
+                                <button id="route-btn" type="button" class="btn btn-primary btn-lg px-4 me-md-2">Mostrar ruta</button>
                                 <p id="route-distance"></p>
+                            </div>
+                            <div>
+                                <h2>Mejor precio</h2>
+                                <select id="fuel-type" class="form-select mb-2">
+                                    <option disabled selected>Selecciona el tipo de combustible</option>
+                                    <option value="diesel">Diesel</option>
+                                    <option value="diesel_premium">Diesel Premium</option>
+                                    <option value="dieselB">Diesel B</option>
+                                    <option value="gasoline95">Gasolina 95</option>
+                                    <option value="gasoline98">Gasolina 98</option>
+                                </select>
+                                <button id="price-btn" type="button" class="btn btn-secondary">Mostrar mejor precio</button>
                             </div> 
                         </div> 
-                    </div>  
+                    </div>
                 </div>
             </main>
             <script>
-                // Render entire python list as JSON
+                // Retrieve stations & localities data
                 const stations = {{ stations | tojson }};
-
-                // Create a map of localities
                 const localities = {{ localities | tojson }};
             </script>
         </body>
